@@ -20,11 +20,21 @@ else
     echo "Database $POSTGRES_DB already exists"
 fi
 
-# Check if the /strapi directory/$STRAPI_APP_NAME exist if not, creat porject using the $STRAPI_APP_NAME environment variable
-if [ ! -d "/strapi/$STRAPI_APP_NAME" ]; then
-    runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
+# Set /strapi directory owner to node
+chown -R node:node /strapi
+
+# Check if the /strapi directory/$STRAPI_APP_NAME exist and contain file if not, creat porject using the $STRAPI_APP_NAME environment variable
+if [ -d "/strapi/$STRAPI_APP_NAME" ]; then
+    echo "$(ls -A /strapi/$STRAPI_APP_NAME)"
+    if [ -z "$(ls -A /strapi/$STRAPI_APP_NAME)" ]; then
+        echo "Project $STRAPI_APP_NAME exists but is empty"
+        rmdir /strapi/$STRAPI_APP_NAME
+        runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
+    else
+        echo "Project $STRAPI_APP_NAME already exists"
+    fi
 else
-    echo "/strapi directory is not empty"
+    runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
 fi
 
 # Start Strapi service as user node

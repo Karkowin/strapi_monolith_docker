@@ -4,9 +4,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - STRAPI_APP_NAME=${STRAPI_APP_NAME}
     ports:
       - "1337:1337"
-    # environment:
-    #   - POSTGRES_USER=test
-    #   - POSTGRES_PASSWORD=test
-    #   - POSTGRES_DB=test
+    volumes:
+      - ./strapi:/strapi/
