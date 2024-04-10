@@ -2,9 +2,11 @@
 FROM node:20
 
 # Set environment variables
-ENV POSTGRES_USER=myuser \
-    POSTGRES_PASSWORD=mypassword \
-    POSTGRES_DB=mydatabase
+ENV POSTGRES_USER=changeme \
+    POSTGRES_PASSWORD=changeme \
+    POSTGRES_DB=changeme \
+    STRAPI_APP_NAME=app \
+    STRAPI_VERSION=4.23.0
 
 # Install lsb-release
 RUN apt-get update \
@@ -25,13 +27,14 @@ RUN apt-get update \
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Initialize PostgreSQL setup
-USER postgres
-RUN /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER $POSTGRES_USER WITH SUPERUSER PASSWORD '$POSTGRES_PASSWORD';" &&\
-    createdb -O $POSTGRES_USER $POSTGRES_DB
+# Install strapi
+RUN npm i -g create-strapi-app@$STRAPI_VERSION
+
+# Create working directory and give permissions to node
+RUN mkdir -p /strapi && chown -R node:node /strapi
+WORKDIR /strapi
 
 # End of Dockerfile
-USER node
-CMD ["tail", "-f", "/dev/null"]
 ENTRYPOINT ["entrypoint.sh"]
+
+# npx create-strapi-app@latest app --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=postgres --dbusername=postgres --dbpassword=postgres --dbssl=false --dbforce

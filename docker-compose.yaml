@@ -4,7 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - POSTGRES_USER=test
-      - POSTGRES_PASSWORD=test
-      - POSTGRES_DB=test
+    ports:
+      - "1337:1337"
+    # environment:
+    #   - POSTGRES_USER=test
+    #   - POSTGRES_PASSWORD=test
+    #   - POSTGRES_DB=test
