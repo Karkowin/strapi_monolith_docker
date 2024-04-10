@@ -1,25 +1,37 @@
-# Use the official Node.js 20 image as base
+# Use Node.js version 20 as base image
 FROM node:20
 
-USER root
+# Set environment variables
+ENV POSTGRES_USER=myuser \
+    POSTGRES_PASSWORD=mypassword \
+    POSTGRES_DB=mydatabase
 
-# Update packages
-RUN apt update && \
-    apt upgrade -y
+# Install lsb-release
+RUN apt-get update \
+    && apt-get install -y lsb-release \
+    && apt-get clean all
 
-# Install postgres sql
-RUN apt install -y postgresql postgresql-contrib
+# Add PostgreSQL repository
+RUN sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
-# Declare environment variables for postgres sql
-ENV PGDATA=/var/lib/postgresql/data
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=postgres
+# Install PostgreSQL
+RUN apt-get update \
+    && apt-get install -y postgresql-14 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Configure postgres sql with user and password and create database
-RUN service postgresql start && \
-    su - postgres -c "psql -c \"CREATE USER $POSTGRES_USER WITH SUPERUSER PASSWORD '$POSTGRES_PASSWORD';\"" && \
-    su - postgres -c "psql -c \"CREATE DATABASE $POSTGRES_DB;\""
+# Add entrypoint script
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Run the container indefenitely
+# Initialize PostgreSQL setup
+USER postgres
+RUN /etc/init.d/postgresql start &&\
+    psql --command "CREATE USER $POSTGRES_USER WITH SUPERUSER PASSWORD '$POSTGRES_PASSWORD';" &&\
+    createdb -O $POSTGRES_USER $POSTGRES_DB
+
+# End of Dockerfile
+USER node
 CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["entrypoint.sh"]
