@@ -31,4 +31,5 @@ jobs:
           file: Dockerfile # Path to the Dockerfile
           push: true
           tags: |
-            latest
+            ghcr.io/karkowin/strapi_docker:${{ steps.extract_tag.outputs.TAG_NAME }}
+            ghcr.io/karkowin/strapi_docker:latest
