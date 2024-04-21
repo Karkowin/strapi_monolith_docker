@@ -37,5 +37,12 @@ else
     runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
 fi
 
+# Declare constants depending on the environment
+if [ "$NODE_ENV" = "development" ]; then
+    RUN_COMMAND="develop"
+else
+    RUN_COMMAND="start"
+fi
+
 # Start Strapi service as user node
-runuser -l node -c "cd /strapi/$STRAPI_APP_NAME && npm run develop"
+runuser -l node -c "cd /strapi/$STRAPI_APP_NAME && npm run $RUN_COMMAND"
