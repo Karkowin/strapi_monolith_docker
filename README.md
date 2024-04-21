@@ -153,8 +153,6 @@ docker exec -it strapi sh -c '/opt/scripts/strapi.sh "<install_command>"'
 
 3. After running the command, the plugin will be installed in your Strapi project and the server/admin panel will be rebuilt automatically.
 
-## Backing Up Data
-
 ## Contributing
 
 Contributions to Strapi Docker are welcome! If you have suggestions, feature requests, or want to report a bug, please open an issue on the [GitHub repository](https://github.com/karkowin/strapi_docker).
