@@ -31,5 +31,4 @@ jobs:
           file: Dockerfile # Path to the Dockerfile
           push: true
           tags: |
-            ghcr.io/karkowin/${{ github.repository }}:${{ steps.extract_tag.outputs.TAG_NAME }}
-            ghcr.io/karkowin/${{ github.repository }}:latest
+            latest
