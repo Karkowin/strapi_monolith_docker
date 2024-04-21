@@ -41,7 +41,7 @@ fi
 if [ "$NODE_ENV" = "development" ]; then
     RUN_COMMAND="develop"
 else
-    RUN_COMMAND="start"
+    RUN_COMMAND="build && npm run start"
 fi
 
 # Start Strapi service as user node
