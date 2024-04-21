@@ -1,0 +1,35 @@
+name: Docker Build and Push
+
+on:
+  push:
+    tags:
+      - '*'  # Trigger on all tag pushes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract tag name
+        id: extract_tag
+        run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .  # Path to the Dockerfile and build context, default is the repository's root directory
+          file: ./path/to/Dockerfile  # Path to the Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/your-image-name:${{ steps.extract_tag.outputs.TAG_NAME }}
+            ghcr.io/${{ github.repository_owner }}/your-image-name:latest
