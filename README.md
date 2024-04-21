@@ -98,10 +98,10 @@ If a project directory exists and its name matches the `STRAPI_APP_NAME` environ
 You can manually trigger a database backup from outside the running container using the following command:
 
 ```bash
-docker exec -it strapi sh -c '/opt/scripts/backup.sh'
+docker exec -it strapi_docker sh -c '/opt/scripts/backup.sh'
 ```
 
-This command creates an SQL backup file under `/strapi/backup/`. Additionally, when creating a container linked with a volume containing a project, Strapi Docker will check if there are backup files present. If the database is empty, it will automatically import the last backup file, ensuring data consistency and integrity.
+This command creates an SQL backup file under `/strapi/dump/`. Additionally, when creating a container linked with a volume containing a project, Strapi Docker will check if there are backup files present. If the database is empty, it will automatically import the last backup file, ensuring data consistency and integrity.
 
 ### Benefits
 
@@ -148,7 +148,7 @@ To install the plugin in your Strapi Docker container, follow these steps:
 2. Use the following command to install the plugin by replacing `<install_command>` with the copied command from the marketplace:
 
 ```bash
-docker exec -it strapi sh -c '/opt/scripts/strapi.sh "<install_command>"'
+docker exec -it strapi_docker sh -c '/opt/scripts/strapi.sh "<install_command>"'
 ```
 
 3. After running the command, the plugin will be installed in your Strapi project and the server/admin panel will be rebuilt automatically.
