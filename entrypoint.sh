@@ -23,15 +23,25 @@ fi
 # Set /strapi directory owner to node
 chown -R node:node /strapi
 
-# Check if the /strapi directory/$STRAPI_APP_NAME exist and contain file if not, creat porject using the $STRAPI_APP_NAME environment variable
+# Check if the /strapi directory/$STRAPI_APP_NAME exist and contain file if not, creat project using the $STRAPI_APP_NAME environment variable
 if [ -d "/strapi/$STRAPI_APP_NAME" ]; then
-    echo "$(ls -A /strapi/$STRAPI_APP_NAME)"
     if [ -z "$(ls -A /strapi/$STRAPI_APP_NAME)" ]; then
         echo "Project $STRAPI_APP_NAME exists but is empty"
         rmdir /strapi/$STRAPI_APP_NAME
         runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
     else
         echo "Project $STRAPI_APP_NAME already exists"
+        # Check if there is an sql dump file in the /strapi/backup directory
+        if [ -n "$(ls -A /strapi/dump/*.sql)" ]; then
+            # Restore the database from the most recent dump file
+            runuser -l postgres -c "psql -d $POSTGRES_DB -f $(ls -t /strapi/dump/*.sql | head -n1)" > /dev/null
+            status=$?
+            if [ $status -eq 0 ]; then
+                echo "Database restore succeeded"
+            else
+                echo "Database restore failed"
+            fi
+        fi
     fi
 else
     runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
