@@ -6,6 +6,31 @@ source /etc/environment
 # Start PostgreSQL service as user postgres
 /etc/init.d/postgresql start
 
+# Ensure that POSTGRES_USER and POSTGRES_DB are set and follow must start with a lowercase letter or an underscore and only contain lowercase letters, numbers, and underscores (equal to or less than 30 characters)
+if [[ ! "$POSTGRES_USER" =~ ^[a-z_][a-z0-9_]{0,29}$ ]]; then
+    echo "POSTGRES_USER must start with a lowercase letter or an underscore and only contain lowercase letters, numbers, and underscores (equal to or less than 30 characters)"
+    exit 1
+fi
+if [[ ! "$POSTGRES_DB" =~ ^[a-z_][a-z0-9_]{0,29}$ ]]; then
+    echo "POSTGRES_DB must start with a lowercase letter or an underscore and only contain lowercase letters, numbers, and underscores (equal to or less than 30 characters)"
+    exit 1
+fi
+
+# Ensure that POSTGRES_PASSWORD, STRAPI_APP_NAME, STRAPI_VERSION, and NODE_ENV are set and does not contain any special characters or spaces except for STRAPI_VERSION which can contain dots
+if [[ ! "$POSTGRES_PASSWORD" =~ ^[a-zA-Z0-9_]+$ ]]; then
+    echo "POSTGRES_PASSWORD must not contain any special characters or spaces"
+    exit 1
+fi
+if [[ ! "$STRAPI_APP_NAME" =~ ^[a-zA-Z0-9_]+$ ]]; then
+    echo "STRAPI_APP_NAME must not contain any special characters or spaces"
+    exit 1
+fi
+if [[ ! "$STRAPI_VERSION" =~ ^[0-9.]+$ ]]; then
+    echo "STRAPI_VERSION must be a valid version number"
+    exit 1
+fi
+
+
 # Check if the $POSTGRES_USER exists; if not, create it
 if [ -z "$(runuser -l postgres -c "psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='$POSTGRES_USER'\"")" ]; then
     runuser -l postgres -c "psql -c \"CREATE USER $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';\""

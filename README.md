@@ -60,7 +60,7 @@ services:
       - ./strapi:/strapi/
 ```
 
-3. Replace the environment variable values (`changeme`) with your desired configurations.
+3. Replace the environment variable values (`changeme`) with your desired configuration following thoses [requirements](#environment-variables).
 
 4. Run the following command in your project directory to start the Docker container:
 
@@ -80,6 +80,16 @@ The following environment variables can be configured in the `docker-compose.yml
 - `STRAPI_APP_NAME`: Name of the Strapi application.
 - `STRAPI_VERSION`: Version of the Strapi npm package to install (optional).
 - `NODE_ENV`: Environment mode for Strapi (`development` or `production`). Default is `development`.
+
+---
+
+The `POSTGRES_USER` and `POSTGRES_DB` environment variables must follow thoses rules:
+
+- Start with a lowercase letter or an underscore
+- Only contain lowercase letters, numbers, and underscores
+- Must be equal to or less than 30 characters
+
+**All the environment variables must't contain any special characters except for the `STRAPI_VERSION` wich can contain dots.**
 
 ## Project Initialization and Volume Linking
 
