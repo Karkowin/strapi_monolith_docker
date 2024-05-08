@@ -1,6 +1,6 @@
-# Strapi Docker
+# Strapi Monolith Docker
 
-Strapi Docker is an open-source project that provides a Docker image to quickly set up a Strapi project with PostgreSQL as the database. This README file will guide you through the setup process, including running the Docker container and configuring environment variables.
+Strapi Monolith Docker aim to provide fully-working ready-to-use docker image for Strapi. It bundle all NodeJS required librairies, PostgreSQL and some usefull scripts to launch a Strapi project without any setup. 
 
 ## Prerequisites
 
@@ -10,12 +10,12 @@ Before you begin, ensure you have Docker installed on your system. You can downl
 
 ### Using Docker CLI
 
-To start using Strapi Docker, follow these steps:
+To start using Strapi Monolith Docker, follow these steps:
 
 1. Pull the latest Docker image from the GitHub Container Registry:
 
 ```bash
-docker pull ghcr.io/karkowin/strapi_docker:latest
+docker pull ghcr.io/karkowin/strapi_monolith_docker:latest
 ```
 
 2. Run the following command to start the Docker container:
@@ -27,15 +27,15 @@ docker run -d -p 1337:1337 \
   -e POSTGRES_DB=changeme \
   -e STRAPI_APP_NAME=changeme \
   -e NODE_ENV=development \
-  --name strapi_docker \
-  ghcr.io/karkowin/strapi_docker:latest
+  --name strapi_monolith_docker \
+  ghcr.io/karkowin/strapi_monolith_docker:latest
 ```
 
 Note: Replace the environment variable values (`changeme`) with your desired configurations.
 
 ### Using Docker Compose
 
-To start using Strapi Docker, follow these steps:
+To start using Strapi Monolith Docker, follow these steps:
 
 1. Clone the repository or create a new directory for your Strapi project.
 
@@ -45,8 +45,8 @@ To start using Strapi Docker, follow these steps:
 version: "3.9"
 services:
   strapi:
-    image: ghcr.io/karkowin/strapi_docker:latest
-    container_name: strapi_docker
+    image: ghcr.io/karkowin/strapi_monolith_docker:latest
+    container_name: strapi_monolith_docker
     environment:
       - POSTGRES_USER=changeme
       - POSTGRES_PASSWORD=changeme
@@ -93,11 +93,11 @@ The `POSTGRES_USER` and `POSTGRES_DB` environment variables must follow thoses r
 
 ## Project Initialization and Volume Linking
 
-Strapi Docker offers flexibility in project initialization and volume linking, allowing you to seamlessly start a new project or continue working on an existing one based on your environment variables and linked volumes.
+Strapi Monolith Docker offers flexibility in project initialization and volume linking, allowing you to seamlessly start a new project or continue working on an existing one based on your environment variables and linked volumes.
 
 ### Automatic Project Creation
 
-When the Strapi Docker container starts and detects no existing project or if the project directory name does not match the environment variable `STRAPI_APP_NAME`, it automatically creates a new project based on the specified environment variable.
+When the Strapi Monolith Docker container starts and detects no existing project or if the project directory name does not match the environment variable `STRAPI_APP_NAME`, it automatically creates a new project based on the specified environment variable.
 
 ### Volume Linking for Existing Projects
 
@@ -108,7 +108,7 @@ If a project directory exists and its name matches the `STRAPI_APP_NAME` environ
 You can manually trigger a database backup from outside the running container using the following command:
 
 ```bash
-docker exec -it strapi_docker sh -c '/opt/scripts/backup.sh'
+docker exec -it strapi_monolith_docker sh -c '/opt/scripts/backup.sh'
 ```
 
 This command creates an SQL backup file under `/strapi/dump/`. Additionally, when creating a container linked with a volume containing a project, Strapi Docker will check if there are backup files present. If the database is empty, it will automatically import the last backup file, ensuring data consistency and integrity.
@@ -152,13 +152,13 @@ Strapi provide external contents that can be installed manually. The [Marketplac
 
 ### Installing Plugins in the Container
 
-To install the plugin in your Strapi Docker container, follow these steps:
+To install the plugin in your Strapi Monolith Docker container, follow these steps:
 
 1. Open a terminal window.
 2. Use the following command to install the plugin by replacing `<install_command>` with the copied command from the marketplace:
 
 ```bash
-docker exec -it strapi_docker sh -c '/opt/scripts/strapi.sh "<install_command>"'
+docker exec -it strapi_monolith_docker sh -c '/opt/scripts/strapi.sh "<install_command>"'
 ```
 
 3. After running the command, the plugin will be installed in your Strapi project and the server/admin panel will be rebuilt automatically.
