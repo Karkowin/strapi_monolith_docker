@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add /usr/local/bin to PATH if it's not already there
+export PATH="/usr/local/bin:$PATH"
+
 # Get environment variables
 source /etc/environment
 
@@ -53,7 +56,7 @@ if [ -d "/strapi/$STRAPI_APP_NAME" ]; then
     if [ -z "$(ls -A /strapi/$STRAPI_APP_NAME)" ]; then
         echo "Project $STRAPI_APP_NAME exists but is empty"
         rmdir /strapi/$STRAPI_APP_NAME
-        runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
+        runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --example --ts --use-npm --install --no-git-init --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --skip-cloud"
     else
         echo "Project $STRAPI_APP_NAME already exists"
         # Check if the database is empty
@@ -75,7 +78,7 @@ if [ -d "/strapi/$STRAPI_APP_NAME" ]; then
         fi
     fi
 else
-    runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --dbforce"
+    runuser -l node -c "cd /strapi && npx create-strapi-app@$STRAPI_VERSION $STRAPI_APP_NAME --example --ts --use-npm --install --no-git-init --dbclient=postgres --dbhost=127.0.0.1 --dbport=5432 --dbname=$POSTGRES_DB --dbusername=$POSTGRES_USER --dbpassword=$POSTGRES_PASSWORD --dbssl=false --skip-cloud"
 fi
 
 # Declare constants depending on the environment

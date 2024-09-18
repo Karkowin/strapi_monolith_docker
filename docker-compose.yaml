@@ -1,16 +1,15 @@
-version: "3.9"
 services:
   strapi:
-    image: ghcr.io/karkowin/strapi_docker:latest
-    container_name: strapi_docker
-    environment:
-      - POSTGRES_USER=changeme
-      - POSTGRES_PASSWORD=changeme
-      - POSTGRES_DB=changeme
-      - STRAPI_APP_NAME=changeme
-      # - STRAPI_VERSION=4.23.0 # Optional use to specify a version of strapi package
-      - NODE_ENV=development # Can be "development" or "production", default is "development"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: strapi_monolith
+    env_file: .env
     ports:
-      - "1337:1337"
+      - 1337:1337
     volumes:
       - ./strapi:/strapi/
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

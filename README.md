@@ -1,6 +1,6 @@
 # Strapi Monolith Docker
 
-Strapi Monolith Docker aim to provide fully-working ready-to-use docker image for Strapi. It bundle all NodeJS required librairies, PostgreSQL and some usefull scripts to launch a Strapi project without any setup. 
+Strapi Monolith Docker aim to provide fully-working ready-to-use docker image for Strapi. It bundle all NodeJS required librairies, PostgreSQL and some usefull scripts to launch a Strapi project without any setup.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ docker run -d -p 1337:1337 \
   -e POSTGRES_DB=changeme \
   -e STRAPI_APP_NAME=changeme \
   -e NODE_ENV=development \
-  --name strapi_monolith_docker \
+  --name strapi_monolith \
   ghcr.io/karkowin/strapi_monolith_docker:latest
 ```
 
@@ -46,7 +46,7 @@ version: "3.9"
 services:
   strapi:
     image: ghcr.io/karkowin/strapi_monolith_docker:latest
-    container_name: strapi_monolith_docker
+    container_name: strapi_monolith
     environment:
       - POSTGRES_USER=changeme
       - POSTGRES_PASSWORD=changeme
@@ -108,7 +108,7 @@ If a project directory exists and its name matches the `STRAPI_APP_NAME` environ
 You can manually trigger a database backup from outside the running container using the following command:
 
 ```bash
-docker exec -it strapi_monolith_docker sh -c '/opt/scripts/backup.sh'
+docker exec strapi_docker strapi-monolith-backup
 ```
 
 This command creates an SQL backup file under `/strapi/dump/`. Additionally, when creating a container linked with a volume containing a project, Strapi Docker will check if there are backup files present. If the database is empty, it will automatically import the last backup file, ensuring data consistency and integrity.
@@ -158,7 +158,7 @@ To install the plugin in your Strapi Monolith Docker container, follow these ste
 2. Use the following command to install the plugin by replacing `<install_command>` with the copied command from the marketplace:
 
 ```bash
-docker exec -it strapi_monolith_docker sh -c '/opt/scripts/strapi.sh "<install_command>"'
+docker exec strapi_docker strapi-monolith-cmd "<install_command>"
 ```
 
 3. After running the command, the plugin will be installed in your Strapi project and the server/admin panel will be rebuilt automatically.

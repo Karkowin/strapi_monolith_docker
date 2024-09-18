@@ -6,8 +6,13 @@ ENV POSTGRES_USER=changeme \
     POSTGRES_PASSWORD=changeme \
     POSTGRES_DB=changeme \
     STRAPI_APP_NAME=changeme \
-    STRAPI_VERSION=4.23.0 \
-    NODE_ENV=development
+    NODE_ENV=development \
+    STRAPI_VERSION=5.0.0 \
+    JWT_SECRET= \
+    ADMIN_JWT_SECRET= \
+    APP_KEYS= \
+    STRAPI_PLUGIN_I18N_INIT_LOCALE_CODE= \
+    STRAPI_TELEMETRY_DISABLED=
 
 # Expose port 1337
 EXPOSE 1337
@@ -39,8 +44,8 @@ RUN apt-get update \
 RUN npm i -g create-strapi-app@$STRAPI_VERSION
 
 # Add scripts and make them executable
-COPY scripts/* /opt/scripts/
-RUN chmod +x /opt/scripts/*
+COPY scripts/* /usr/local/bin/
+RUN chmod +x /usr/local/bin/*
 
 # Add entrypoint script
 COPY entrypoint.sh /usr/local/bin/
